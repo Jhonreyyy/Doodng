@@ -1,0 +1,59 @@
+```lua
+-- Untitled Boxing Game Script
+
+-- Variables
+local player = game.Players.LocalPlayer
+local character = player.Character
+local humanoid = character:WaitForChild("Humanoid")
+
+-- Functions
+local function getOpponent()
+-- Get the opponent's character
+local opponents = game.Workspace.Opponents:GetChildren()
+for _, opponent in pairs(opponents) do
+if opponent.Humanoid.Health > 0 then
+return opponent
+end
+end
+end
+
+local function punchOpponent(opponent)
+-- Punch the opponent
+humanoid.WalkToPoint = opponent.HumanoidRootPart.Position
+wait(0.5) -- Wait for the character to reach the opponent
+humanoid.JumpPower = 50 -- Make the character jump to attack
+end
+
+local function dodgeOpponent(opponent)
+-- Dodge the opponent's attack
+local direction = (opponent.HumanoidRootPart.Position - character.HumanoidRootPart.Position).Unit
+humanoid.WalkToPoint = character.HumanoidRootPart.Position + direction * 2
+wait(0.2) -- Wait for the dodge animation to finish
+end
+
+local function blockOpponent(opponent)
+-- Block the opponent's attack
+humanoid.WalkToPoint = character.HumanoidRootPart.Position
+wait(0.2) -- Wait for the block animation to finish
+humanoid.JumpPower = 0 -- Reset the character's jump power
+end
+
+-- Main Loop
+while true do
+local opponent = getOpponent()
+if opponent then
+local distance = (opponent.HumanoidRootPart.Position - character.HumanoidRootPart.Position).magnitude
+if distance < 2 then
+if math.random(1, 2) == 1 then
+dodgeOpponent(opponent)
+else
+blockOpponent(opponent)
+end
+else
+punchOpponent(opponent)
+end
+end
+wait(0.1) -- Wait for a short period before checking again
+end
+```
+This updated script will automatically find and punch the opponent, as well as dodge or block the opponent's attacks. The script uses a random number generator to decide whether to dodge or block, and the dodge and block functions are called when the opponent is close to the character.
